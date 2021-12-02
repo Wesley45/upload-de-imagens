@@ -21,7 +21,7 @@ type RequestImage = {
 };
 
 export async function getImages({
-  pageParam = null,
+  pageParam = 0,
 }: RequestImage): Promise<ResponseImages> {
   const response = await api.get<ResponseImages>('/api/images', {
     params: {
@@ -36,10 +36,7 @@ export function useImages(): UseInfiniteQueryResult<
   ResponseImages,
   AxiosError
 > {
-  return useInfiniteQuery(['images'], getImages, {
-    staleTime: 1000 * 60 * 10,
-    getNextPageParam: lastPage => {
-      return lastPage.after ? lastPage.after : null;
-    },
+  return useInfiniteQuery('images', getImages, {
+    getNextPageParam: lastPage => lastPage.after || null,
   });
 }
